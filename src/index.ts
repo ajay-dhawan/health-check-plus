@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import path from 'path';
 import simpleGit, { SimpleGit } from 'simple-git';
 
-const repoPath = path.resolve(__dirname, '.git');
+const repoPath = path.resolve(__dirname, '../.git');
 
 /**
  * Holds version information for the application.

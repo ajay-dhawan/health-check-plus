@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import simpleGit from 'simple-git';
-import { AppVersionInfo, GetVersionInfo } from '../index';
+import { AppVersionInfo, GetVersionInfo } from '../src/index';
 
 describe("GetVersionInfo", () => {
   afterEach(() => {
