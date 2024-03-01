@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import path from 'path';
 import simpleGit, { SimpleGit } from 'simple-git';
 
+const repoPath = path.resolve(__dirname, '.git');
+
 /**
  * Holds version information for the application.
  * @param version - Application version.
@@ -78,10 +80,8 @@ function GetVersionInfo(packageJsonPath?: string, versionInfo?: AppVersionInfo):
       );
     });
 
-  return versionInfo;
+  return versionInfo as AppVersionInfo;
 }
-
-const repoPath = path.resolve(__dirname, '.git');
 
 /**
  * SimpleGit instance for interacting with the Git repository.
@@ -98,7 +98,7 @@ async function getLatestCommitInfo(): Promise<string> {
       if (err) {
         console.error('Error:', err);
         reject(err);
-      } else {
+      } else if (logSummary.latest){
         console.info('Latest Commit:', logSummary.latest);
         resolve(logSummary.latest.hash);
       }
