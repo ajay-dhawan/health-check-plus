@@ -1,3 +1,3 @@
 # health-check-plus
 
-### Out of the box health chech functionality on steroids !
+### Out of the box health check functionality on steroids !
