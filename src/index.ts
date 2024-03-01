@@ -2,12 +2,11 @@ import * as fs from 'fs';
 import path from 'path';
 import simpleGit, { SimpleGit } from 'simple-git';
 
+// Resolve the path to the Git repository
 const repoPath = path.resolve(__dirname, '../.git');
 
 /**
  * Holds version information for the application.
- * @param version - Application version.
- * @param commitHash - Commit hash.
  */
 class AppVersionInfo {
   /**
@@ -22,6 +21,8 @@ class AppVersionInfo {
 
   /**
    * Creates an instance of AppVersionInfo.
+   * @param {string} [version] - Application version.
+   * @param {string} [commitHash] - Commit hash.
    */
   constructor(version?: string, commitHash?: string) {
     this.version = version || null;
@@ -31,56 +32,41 @@ class AppVersionInfo {
 
 /**
  * Retrieves version information for the application.
- * @param packageJsonPath - Path to the package.json file (optional).
- * @param versionInfo - Existing version information (optional).
- * @returns VersionInfo information for the application.
+ * @param {string} [packageJsonPath] - Path to the package.json file (optional).
+ * @param {AppVersionInfo} [versionInfo] - Existing version information (optional).
+ * @returns {Promise<AppVersionInfo>} - Version information for the application.
  */
-function GetVersionInfo(packageJsonPath?: string, versionInfo?: AppVersionInfo): AppVersionInfo {
-
-  /**
-   * Checks if the provided versionInfo is valid and non-empty.
-   * Returns the versionInfo if valid, otherwise gets version info.
-   */
+async function GetVersionInfo(packageJsonPath?: string, versionInfo?: AppVersionInfo): Promise<AppVersionInfo> {
+  // Check if versionInfo is provided and valid
   if (versionInfo != null &&
-      !(typeof versionInfo.commitHash !== 'string' || versionInfo.commitHash.trim() === '') &&
-      !(typeof versionInfo.version    !== 'string' || versionInfo.version.trim()    === '')
-    ) { 
-      return versionInfo; 
-    }
+      typeof versionInfo.commitHash === 'string' && versionInfo.commitHash.trim() !== '' &&
+      typeof versionInfo.version === 'string' && versionInfo.version.trim() !== '') {
+    return versionInfo;
+  }
 
-  /**
-   * Sets a default path for the package.json file if one is not provided.
-   */
+  // Set default path for package.json if not provided
   if (!packageJsonPath) {
     packageJsonPath = "./package.json";
   }
 
-  /**
-   * Reads the package.json file and parses it to JSON.
-   * Gets the version property from the parsed JSON.
-   */
+  // Read package.json file and parse version
   const packageJsonContent = fs.readFileSync(packageJsonPath, "utf-8");
   const packageJson = JSON.parse(packageJsonContent);
   const version = packageJson.version;
 
-    /**
-   * Gets the latest commit hash from Git, then creates an AppVersionInfo instance
-   * using the package version and commit hash. If unable to get the commit hash,
-   * creates the AppVersionInfo with a default message instead.
-   */
-  getLatestCommitInfo()
-    .then((commitHash: string) => {
-      versionInfo = new AppVersionInfo(version, commitHash);
-    })
-    .catch((err: Error) => {
-      console.error("Error:", err);
-      versionInfo = new AppVersionInfo(
-        version,
-        "Unable to get latest commit hash"
-      );
-    });
+  // Get latest commit hash from Git
+  let commitHash;
+  try {
+    commitHash = await getLatestCommitInfo();
+  } catch (err) {
+    console.error("Error:", err);
+    commitHash = "Unable to get latest commit hash";
+  }
 
-  return versionInfo as AppVersionInfo;
+  // Create AppVersionInfo instance
+  versionInfo = new AppVersionInfo(version, commitHash);
+
+  return versionInfo;
 }
 
 /**
@@ -90,7 +76,7 @@ const git: SimpleGit = simpleGit(repoPath);
 
 /**
  * Retrieves the latest commit information.
- * @returns A Promise resolving to the latest commit hash.
+ * @returns {Promise<string>} - A Promise resolving to the latest commit hash.
  */
 async function getLatestCommitInfo(): Promise<string> {
   return new Promise<string>((resolve, reject) => {
