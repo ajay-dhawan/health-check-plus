@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import path from 'path';
+import * as path from 'path';
 import simpleGit, { SimpleGit } from 'simple-git';
 
 // Resolve the path to the Git repository
-const repoPath = path.resolve(__dirname, '../.git');
+const repoPath = path.resolve(__dirname, '../');
 
 /**
  * Holds version information for the application.
@@ -66,6 +66,10 @@ async function GetVersionInfo(packageJsonPath?: string, versionInfo?: AppVersion
   // Create AppVersionInfo instance
   versionInfo = new AppVersionInfo(version, commitHash);
 
+  // Write versionInfo to an env file with name health-check-plus-data.json, if file not present then create that file and write data into it
+  fs.writeFileSync(path.resolve(__dirname, '../health-check-plus-data.json'), JSON.stringify(versionInfo));
+  console.log('Version Info:  ',  versionInfo);
+  
   return versionInfo;
 }
 
@@ -85,7 +89,7 @@ async function getLatestCommitInfo(): Promise<string> {
         console.error('Error:', err);
         reject(err);
       } else if (logSummary.latest){
-        console.info('Latest Commit:', logSummary.latest);
+        //console.info('Latest Commit:', logSummary.latest);
         resolve(logSummary.latest.hash);
       }
     });
