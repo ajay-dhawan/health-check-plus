@@ -89,7 +89,7 @@ async function getLatestCommitInfo(): Promise<string> {
         console.error('Error:', err);
         reject(err);
       } else if (logSummary.latest){
-        //console.info('Latest Commit:', logSummary.latest);
+        console.info('Latest Commit:', logSummary.latest);
         resolve(logSummary.latest.hash);
       }
     });
