@@ -35,10 +35,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getVersionInfo = exports.AppVersionInfo = void 0;
+exports.healthCheckPlus = exports.getVersionInfo = exports.AppVersionInfo = void 0;
 const fs = __importStar(require("fs"));
 const simple_git_1 = __importDefault(require("simple-git"));
-const http = __importStar(require("http"));
 // Resolve the path to the Git repository
 let repoPath = undefined;
 /**
@@ -136,12 +135,51 @@ function getLatestCommitInfo() {
         });
     });
 }
-const PORT = process.env.PORT || 3000; // Use the port specified by the user or default to 3000
-const server = http.createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello, World!\n');
-});
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+/**
+ * Middleware function for performing a health check plus operation.
+ * Retrieves version and latest commit information and sends it as a JSON response.
+ * These health checks are available out of the box:
+ * - '/HealthCheck'
+ * - '/HealthCheck/'
+ * - '/Health-Check'
+ * - '/Health-Check/'
+ * - '/health-check'
+ * - '/health-check/'
+ * - '/healthCheck'
+ * - '/healthCheck/'
+ * - '/health-check-plus'
+ * - '/health-check-plus/'
+ * @param req Express Request object.
+ * @param res Express Response object.
+ * @param next Express NextFunction object.
+ */
+function healthCheckPlus(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const endpoint = req.url;
+            switch (endpoint) {
+                // Valid endpoints for health check plus operation
+                case '/HealthCheck':
+                case '/HealthCheck/':
+                case '/Health-Check':
+                case '/Health-Check/':
+                case '/health-check':
+                case '/health-check/':
+                case '/healthCheck':
+                case '/healthCheck/':
+                case '/health-check-plus':
+                case '/health-check-plus/':
+                    const versionInfo = yield getVersionInfo();
+                    res.status(200).send(JSON.stringify(versionInfo, null, 2));
+                    break;
+            }
+        }
+        catch (error) {
+            console.error(error);
+            res.status(501).send(JSON.stringify({ error: error }, null, 2));
+        }
+        next();
+    });
+}
+exports.healthCheckPlus = healthCheckPlus;
 //# sourceMappingURL=index.js.map
