@@ -23,7 +23,7 @@ npm install --save health-check-plus
 
 ## Usage
 
-Simply import the `healthCheckPlus` middleware into your Express.js application and use it as a middleware. This middleware provides a comprehensive health check endpoint with version information and the latest commit hash.
+Simply import the `healthCheckPlus` into your Express.js application and use it as a middleware. This middleware provides a comprehensive health check endpoint with version information and the latest commit hash.
 
 ## Examples
 
@@ -66,6 +66,9 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 ```
+
+### Response in Browser
+<img src="./public/screen-shot.png" width="300px"/>
 
 ## API
 
