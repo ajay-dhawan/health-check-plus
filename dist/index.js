@@ -159,6 +159,8 @@ function healthCheckPlus(req, res, next) {
             const endpoint = req.url;
             switch (endpoint) {
                 // Valid endpoints for health check plus operation
+                case '/healthcheck':
+                case '/healthcheck/':
                 case '/HealthCheck':
                 case '/HealthCheck/':
                 case '/Health-Check':
@@ -167,6 +169,8 @@ function healthCheckPlus(req, res, next) {
                 case '/health-check/':
                 case '/healthCheck':
                 case '/healthCheck/':
+                case '/healthCheckPlus':
+                case '/healthCheckPlus/':
                 case '/health-check-plus':
                 case '/health-check-plus/':
                     const versionInfo = yield getVersionInfo();
