@@ -1,9 +1,8 @@
 import * as fs from 'fs';
-import * as path from 'path';
 import simpleGit, { SimpleGit } from 'simple-git';
 
 // Resolve the path to the Git repository
-const repoPath = path.resolve(__dirname, '../');
+let repoPath: string | undefined = undefined;
 
 /**
  * Holds version information for the application.
@@ -37,6 +36,7 @@ class AppVersionInfo {
  * @returns {Promise<AppVersionInfo>} - Version information for the application.
  */
 async function GetVersionInfo(packageJsonPath?: string, versionInfo?: AppVersionInfo): Promise<AppVersionInfo> {
+
   // Check if versionInfo is provided and valid
   if (versionInfo != null &&
       typeof versionInfo.commitHash === 'string' && versionInfo.commitHash.trim() !== '' &&
@@ -46,30 +46,49 @@ async function GetVersionInfo(packageJsonPath?: string, versionInfo?: AppVersion
 
   // Set default path for package.json if not provided
   if (!packageJsonPath) {
-    packageJsonPath = "./package.json";
+    packageJsonPath = './package.json';
   }
 
   // Read package.json file and parse version
-  const packageJsonContent = fs.readFileSync(packageJsonPath, "utf-8");
+  const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf-8');
   const packageJson = JSON.parse(packageJsonContent);
+
+  // Version will always be present in package.json
   const version = packageJson.version;
 
+  // If repoPath is not set, set it to the current working directory (cwd)
+  if (repoPath === undefined || repoPath.trim() === '') {
+    repoPath = process.cwd();
+  }
+
   // Get latest commit hash from Git
-  let commitHash;
+  let commitHash: string | null = null;
   try {
     commitHash = await getLatestCommitInfo();
   } catch (err) {
-    console.error("Error:", err);
-    commitHash = "Unable to get latest commit hash";
+    console.error('Error: ', err);
+    commitHash = 'Unable to get latest commit hash';
   }
+
+  // Check if commitHash is present in package.json or not, if present compare it with the latest commit hash, if not, add it
+  if (typeof packageJson['commit-hash'] === 'string' && packageJson['commit-hash'].trim() !== '') {
+    if (packageJson['commit-hash'] !== commitHash) {
+      if (commitHash !== 'Unable to get latest commit hash') {
+        console.info('Updating commit-hash in package.json to latest commit hash');
+        packageJson['commit-hash'] = commitHash;
+      } else {
+        packageJson['commit-hash'] = 'Alert! This may not be the latest commit hash -->' + packageJson['commit-hash'];
+      }
+    }
+  }
+
+  // Add commitHash to config and write it back to package.json
+  packageJson['commit-hash'] = commitHash;
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
   // Create AppVersionInfo instance
   versionInfo = new AppVersionInfo(version, commitHash);
 
-  // Write versionInfo to an env file with name health-check-plus-data.json, if file not present then create that file and write data into it
-  fs.writeFileSync(path.resolve(__dirname, '../health-check-plus-data.json'), JSON.stringify(versionInfo));
-  console.log('Version Info:  ',  versionInfo);
-  
   return versionInfo;
 }
 
@@ -88,8 +107,7 @@ async function getLatestCommitInfo(): Promise<string> {
       if (err) {
         console.error('Error:', err);
         reject(err);
-      } else if (logSummary.latest){
-        console.info('Latest Commit:', logSummary.latest);
+      } else if (logSummary.latest) {
         resolve(logSummary.latest.hash);
       }
     });
@@ -97,6 +115,6 @@ async function getLatestCommitInfo(): Promise<string> {
 }
 
 /**
- * Exports VersionInfo class and GetVersionInfo function for external use.
+ * Exports VersionInfo class and getVersionInfo function for external use.
  */
-export { AppVersionInfo , GetVersionInfo };
+export { AppVersionInfo, GetVersionInfo };
