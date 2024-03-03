@@ -68,7 +68,7 @@ app.listen(port, () => {
 ```
 
 ### Response in Browser
-<img src="./public/screen-shot.png" width="300px"/>
+<img src="./public/screen-shot.png" width="700px"/>
 
 ## API
 
