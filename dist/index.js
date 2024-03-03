@@ -35,9 +35,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetVersionInfo = exports.AppVersionInfo = void 0;
+exports.getVersionInfo = exports.AppVersionInfo = void 0;
 const fs = __importStar(require("fs"));
 const simple_git_1 = __importDefault(require("simple-git"));
+const http = __importStar(require("http"));
 // Resolve the path to the Git repository
 let repoPath = undefined;
 /**
@@ -61,7 +62,7 @@ exports.AppVersionInfo = AppVersionInfo;
  * @param {AppVersionInfo} [versionInfo] - Existing version information (optional).
  * @returns {Promise<AppVersionInfo>} - Version information for the application.
  */
-function GetVersionInfo(packageJsonPath, versionInfo) {
+function getVersionInfo(packageJsonPath, versionInfo) {
     return __awaiter(this, void 0, void 0, function* () {
         // Check if versionInfo is provided and valid
         if (versionInfo != null &&
@@ -111,7 +112,7 @@ function GetVersionInfo(packageJsonPath, versionInfo) {
         return versionInfo;
     });
 }
-exports.GetVersionInfo = GetVersionInfo;
+exports.getVersionInfo = getVersionInfo;
 /**
  * SimpleGit instance for interacting with the Git repository.
  */
@@ -135,4 +136,12 @@ function getLatestCommitInfo() {
         });
     });
 }
+const PORT = process.env.PORT || 3000; // Use the port specified by the user or default to 3000
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Hello, World!\n');
+});
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 //# sourceMappingURL=index.js.map

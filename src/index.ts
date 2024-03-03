@@ -35,7 +35,7 @@ class AppVersionInfo {
  * @param {AppVersionInfo} [versionInfo] - Existing version information (optional).
  * @returns {Promise<AppVersionInfo>} - Version information for the application.
  */
-async function GetVersionInfo(packageJsonPath?: string, versionInfo?: AppVersionInfo): Promise<AppVersionInfo> {
+async function getVersionInfo( packageJsonPath?: string, versionInfo?: AppVersionInfo): Promise<AppVersionInfo> {
 
   // Check if versionInfo is provided and valid
   if (versionInfo != null &&
@@ -117,4 +117,4 @@ async function getLatestCommitInfo(): Promise<string> {
 /**
  * Exports VersionInfo class and getVersionInfo function for external use.
  */
-export { AppVersionInfo, GetVersionInfo };
+export { AppVersionInfo, getVersionInfo };
