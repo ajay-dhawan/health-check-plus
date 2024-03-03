@@ -1,70 +1,83 @@
-# Health Check Plus
+# <img src="./public/health-check-plus-icon.jpg" width="30px"/> Health Check Plus for Express.js
 
-This utility provides functionality to retrieve version information for a JavaScript application from its `package.json` file and the latest commit hash from the associated Git repository. Additionally, it updates the `package.json` file with the latest commit hash for use in health checks.
+This npm package provides a supercharged out-of-the-box health check middleware for Express.js applications. It simplifies the process of adding a health check endpoint to your backend Node.js projects, especially when deploying on AWS or other platforms.
 
-## How to Use
+## Table of Contents
 
-### CommonJS (Node.js)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [API](#api)
+- [Health Checks](#health-checks)
+- [Code Explanation](#code-explanation)
+- [Why Was This Package Created?](#why-was-this-package-created)
+- [License](#license)
 
-1. Install the required dependencies by running the following command:
+## Installation
 
-   ```bash
-   npm install simple-git
-   ```
+To install the package, use npm:
 
-2. Create a JavaScript file (e.g., `app.js`) and include the following code:
+```bash
+npm install --save health-check-plus
+```
 
-   ```javascript
-   const { GetVersionInfo } = require('./version-info');
+## Usage
 
-   async function main() {
-       try {
-           const versionInfo = await GetVersionInfo();
-           console.log('Version:', versionInfo.version);
-           console.log('Commit Hash:', versionInfo.commitHash);
-       } catch (error) {
-           console.error('Error:', error);
-       }
-   }
+Simply import the `healthCheckPlus` middleware into your Express.js application and use it as a middleware. This middleware provides a comprehensive health check endpoint with version information and the latest commit hash.
 
-   main();
-   ```
+## Examples
 
-### ES Module (Browser or Node.js)
+### ES Module Usage
 
-1. Install the required dependencies by running the following command:
+```javascript
+import express from 'express';
+import { healthCheckPlus } from 'health-check-plus';
 
-   ```bash
-   npm install simple-git
-   ```
+const app = express();
 
-2. Create a JavaScript file (e.g., `app.mjs`) and include the following code:
+// Add health check middleware
+app.use('/health', healthCheckPlus);
 
-   ```javascript
-   import { GetVersionInfo } from './version-info.mjs';
+// Other routes and middleware can be defined here
 
-   async function main() {
-       try {
-           const versionInfo = await GetVersionInfo();
-           console.log('Version:', versionInfo.version);
-           console.log('Commit Hash:', versionInfo.commitHash);
-       } catch (error) {
-           console.error('Error:', error);
-       }
-   }
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+```
 
-   main();
-   ```
+### CommonJS Usage
 
-3. Run your application:
+```javascript
+const express = require('express');
+const { healthCheckPlus } = require('health-check-plus');
 
-   - For Node.js:
+const app = express();
 
-     ```bash
-     node --experimental-modules app.mjs
-     ```
+// Add health check middleware
+app.use('/health', healthCheckPlus);
 
-   - For browsers, make sure to use a module bundler like Webpack or rollup.js.
+// Other routes and middleware can be defined here
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+```
+
+## API
+
+### healthCheckPlus Middleware Function
+
+Middleware function for performing a supercharged health check operation. It retrieves version information and the latest commit hash and sends it as a JSON response.
+
+- `healthCheckPlus(req: Request, res: Response, next: NextFunction)`: Middleware function for performing a supercharged health check operation.
+
+  - `req`: Express Request object.
+  - `res`: Express Response object.
+  - `next`: Express NextFunction object.
 
 ## Health Checks
 
@@ -77,6 +90,10 @@ To facilitate health checks, this utility automatically updates the `package.jso
 - The `AppVersionInfo` class represents version information with properties for version and commit hash.
 - The utility exports the `AppVersionInfo` class and the `GetVersionInfo` function for external use.
 
----
+## Why Was This Package Created?
 
-Save this content into a file named `readme.md` in the root directory of your project. This `readme.md` file provides comprehensive instructions on how to use the provided utility both as a CommonJS module and as an ES Module, along with explanations of the code functionality and its integration with health checks.
+This npm package was created to address the repetitive task of adding a health check endpoint to backend Node.js projects, especially when deploying on AWS or other platforms. The author of this package found it cumbersome to manually create health checks for each project and decided to create a supercharged solution that can be easily integrated into any Express.js application.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
