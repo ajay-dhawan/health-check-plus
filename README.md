@@ -35,8 +35,21 @@ import { healthCheckPlus } from 'health-check-plus';
 
 const app = express();
 
-// Add health check middleware
-app.use('/health', healthCheckPlus);
+/** 
+ * Add health check middleware
+  Remember, you don't need to give path or route here we support these routes out of the box:
+  '/HealthCheck'
+  '/HealthCheck/'
+  '/Health-Check'
+  '/Health-Check/'
+  '/health-check'
+  '/health-check/'
+  '/healthCheck'
+  '/healthCheck/'
+  '/health-check-plus'
+  '/health-check-plus/'
+**/
+app.use(healthCheckPlus);
 
 // Other routes and middleware can be defined here
 
@@ -55,8 +68,21 @@ const { healthCheckPlus } = require('health-check-plus');
 
 const app = express();
 
-// Add health check middleware
-app.use('/health', healthCheckPlus);
+/** 
+ * Add health check middleware
+  Remember, you don't need to give path or route here we support these routes out of the box:
+  '/HealthCheck'
+  '/HealthCheck/'
+  '/Health-Check'
+  '/Health-Check/'
+  '/health-check'
+  '/health-check/'
+  '/healthCheck'
+  '/healthCheck/'
+  '/health-check-plus'
+  '/health-check-plus/'
+**/
+app.use(healthCheckPlus);    
 
 // Other routes and middleware can be defined here
 
