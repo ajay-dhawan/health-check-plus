@@ -37,7 +37,7 @@ const app = express();
 
 /** 
  * Add health check middleware
-  Remember, you don't need to give path or route here we support these routes out of the box:
+  Remember, you don't need to give path or route here we support these routes out of the box, just hit any one of these:
   '/HealthCheck'
   '/HealthCheck/'
   '/Health-Check'
@@ -70,7 +70,7 @@ const app = express();
 
 /** 
  * Add health check middleware
-  Remember, you don't need to give path or route here we support these routes out of the box:
+  Remember, you don't need to give path or route here we support these routes out of the box, just hit any one of these:
   '/HealthCheck'
   '/HealthCheck/'
   '/Health-Check'
